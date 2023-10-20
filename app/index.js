@@ -2,10 +2,14 @@ import express from 'express'
 import logger from 'morgan'
 import { Server } from 'socket.io'
 import { createServer } from 'node:http'
+import dotenv from 'dotenv'
+import service from './service/service.js'
+
+dotenv.config()
 
 const isConected = 'is_conected'
 const temperature = 'temperature'
-const hardcodedToken = 'miTokenSecreto'
+const hardcodedToken = process.env.TOKEN
 const port = process.env.PORT ?? 3000
 
 const app = express()
@@ -23,6 +27,7 @@ const accessControlMiddleware = (socket, next) => {
 }
 
 io.use(accessControlMiddleware)
+service('La temperatura supera los 10 grados')
 
 io.on('connection', (socket) => {
   console.log('a user connected')
@@ -30,11 +35,17 @@ io.on('connection', (socket) => {
   io.emit(temperature, null)
 
   socket.on(isConected, (conectionStatus) => {
+    if (!conectionStatus) {
+      service('La conexion se corto')
+    }
     io.emit(isConected, conectionStatus)
   })
 
   socket.on(temperature, (temperature) => {
     console.log('temperature: ' + temperature)
+    if (temperature > 10) {
+      service('La temperatura supera los 10 grados')
+    }
     io.emit(temperature, temperature)
   })
 
