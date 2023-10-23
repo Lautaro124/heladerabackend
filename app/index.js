@@ -4,7 +4,7 @@ import { Server } from 'socket.io'
 import { createServer } from 'node:http'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
-import { sendMessage, getTextMessageInput } from './service/service.js'
+import { sendMessage } from './service/service.js'
 
 dotenv.config()
 
@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
 
   socket.on(isConected, (conectionStatus) => {
     if (!conectionStatus) {
-      // service('conexion_perdida')
+      sendMessage('conexion_perdida')
     }
     io.emit(isConected, conectionStatus)
   })
@@ -44,7 +44,7 @@ io.on('connection', (socket) => {
   socket.on(temperature, (temperature) => {
     console.log('temperature: ' + temperature)
     if (temperature > 10) {
-      // service('heladera_caliente')
+      sendMessage('heladera_caliente')
     }
     io.emit(temperature, temperature)
   })
@@ -67,16 +67,14 @@ app.get('/', (req, res) => {
 })
 
 app.post('/test', function (req, res, next) {
-  const data = getTextMessageInput(process.env.RECIPIENT_WAID, 'Welcome to the Movie Ticket Demo App for Node.js!')
-
-  sendMessage(data)
+  sendMessage('heladera_caliente')
     .then(function (response) {
-      res.redirect('/')
-      res.sendStatus(200)
+      console.log('response: ' + response)
+      res.send('Funciono')
     })
     .catch(function (error) {
       console.log(error)
-      console.log(error.response.data)
+      console.log(error.response?.data)
       res.sendStatus(500)
     })
 })
