@@ -10,6 +10,7 @@ dotenv.config()
 
 const isConected = 'is_conected'
 const temperature = 'temperature'
+var temperatureValue = 0
 // const hardcodedToken = process.env.TOKEN
 const port = process.env.PORT ?? 3000
 
@@ -47,12 +48,13 @@ io.on('connection', (socket) => {
     io.emit(isConected, conectionStatus)
   })
 
-  socket.on(temperature, (temperature) => {
-    console.log('temperature: ' + temperature)
-    if (temperature > 10) {
+  socket.on(temperature, (temperatureSocket) => {
+    console.log('temperature: ' + temperatureSocket)
+    temperatureValue = temperature
+    if (temperatureSocket > 10) {
       sendMessage('heladera_caliente')
     }
-    io.emit(temperature, temperature)
+    io.emit(temperature, temperatureSocket)
   })
 
   socket.on('error', (err) => {
