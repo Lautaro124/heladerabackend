@@ -16,7 +16,11 @@ const port = process.env.PORT ?? 3000
 const app = express()
 
 const server = createServer(app)
-const io = new Server(server)
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+  }
+})
 
 const accessControlMiddleware = (socket, next) => {
   const clientToken = socket.handshake.query.token
