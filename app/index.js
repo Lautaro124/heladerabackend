@@ -10,7 +10,7 @@ dotenv.config()
 
 const isConected = 'is_conected'
 const temperature = 'temperature'
-const hardcodedToken = process.env.TOKEN
+// const hardcodedToken = process.env.TOKEN
 const port = process.env.PORT ?? 3000
 
 const app = express()
@@ -18,26 +18,28 @@ const app = express()
 const server = createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: '*'
   }
 })
 
-const accessControlMiddleware = (socket, next) => {
-  const clientToken = socket.handshake.query.token
+// const accessControlMiddleware = (socket, next) => {
+//   const clientToken = socket.handshake.query.token
 
-  if (clientToken === hardcodedToken) {
-    return next()
-  }
-  return next(new Error('Acceso no autorizado'))
-}
+//   if (clientToken === hardcodedToken) {
+//     return next()
+//   }
+//   return next(new Error('Acceso no autorizado'))
+// }
 
-io.use(accessControlMiddleware)
+// io.use(accessControlMiddleware)
 
 io.on('connection', (socket) => {
   console.log('a user connected')
+  sendMessage('conexion_perdida')
   io.emit(isConected, true)
   io.emit(temperature, null)
 
+  //TODO: VALIDAR DATOS
   socket.on(isConected, (conectionStatus) => {
     if (!conectionStatus) {
       sendMessage('conexion_perdida')

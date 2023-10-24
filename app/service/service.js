@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export function sendMessage (templateName) {
+export function sendMessage(templateName) {
   const config = {
     method: 'post',
     url: `https://graph.facebook.com/${process.env.VERSION}/${process.env.PHONE_NUMBER_ID}/messages`,
@@ -10,7 +10,7 @@ export function sendMessage (templateName) {
     },
     data: {
       messaging_product: 'whatsapp',
-      to: '541163218781',
+      to: '541128983499',
       type: 'template',
       template: {
         name: templateName,
